@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños!</title>
+    <style>
+        body {
+            background-color: #87CEEB; /* Fondo de cielo */
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #gameArea {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: url('https://st3.depositphotos.com/6064568/15673/v/1600/depositphotos_156733008-stock-illustration-cartoon-color-nature-spring-summer.jpg') repeat-x bottom;
+            border: 2px solid #000;
+            overflow: hidden;
+        }
+        #kitty {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: url('https://www.klipartz.com/es/sticker-png-owbye') no-repeat center/contain;
+            bottom: 0;
+            left: 10px;
+        }
+        .item, .obstacle {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            bottom: 0;
+            background-size: contain;
+        }
+        .item {
+            background: url('https://www.klipartz.com/es/sticker-png-fsslq') no-repeat center;
+        }
+        .obstacle {
+            background: url('https://www.klipartz.com/es/sticker-png-ftrpp') no-repeat center;
+            height: 20px;
+        }
+        #message {
+            display: none;
+            font-size: 24px;
+            color: #ff69b4;
+            margin-top: 20px;
+            text-align: center;
+        }
+        #controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .control-button {
+            padding: 10px;
+            margin: 5px;
+            font-size: 18px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Upa, ya casi [mi amor]!</h1>
+    <div id="gameArea">
+        <div id="kitty"></div>
+        <div class="item" style="left: 150px;"></div> <!-- Primer pastel -->
+        <div class="item" style="left: 300px;"></div> <!-- Segundo pastel -->
+        <div class="obstacle" style="left: 200px;"></div> <!-- Primer obstáculo -->
+    </div>
+    <div id="message">¡Feliz Cumpleaños, [Nicolita de mi corazón]!</div>
+
+    <div id="controls">
+        <button class="control-button" id="left">Izquierda</button>
+        <button class="control-button" id="right">Derecha</button>
+        <button class="control-button" id="jump">Saltar</button>
+    </div>
+
+    <script>
+        const kitty = document.getElementById('kitty');
+        const items = document.querySelectorAll('.item');
+        const obstacles = document.querySelectorAll('.obstacle');
+        const message = document.getElementById('message');
+        let collectedItems = 0;
+
+        function moveKitty(direction) {
+            let kittyLeft = kitty.offsetLeft;
+
+            if (direction === 'left') kitty.style.left = (kittyLeft - 20) + 'px';
+            if (direction === 'right') kitty.style.left = (kittyLeft + 20) + 'px';
+
+            // Verificar colisiones con objetos
+            items.forEach(item => {
+                if (isColliding(kitty, item)) {
+                    item.style.display = 'none'; // Ocultar el objeto recolectado
+                    collectedItems++;
+                    if (collectedItems === items.length) {
+                        message.style.display = 'block'; // Felicidades 
+                    }
+                }
+            });
+
+            // Verificar colisiones con obstáculos
+            obstacles.forEach(obstacle => {
+                if (isColliding(kitty, obstacle)) {
+                    // Mostrar un mensaje de "Inténtalo de nuevo" y reiniciar el nivel
+alert('¡Inténtalo de nuevo!');
+window.location.reload();
+                }
+            });
+        }
+
+        function jumpKitty() {
+            kitty.style.bottom = '100px';
+            setTimeout(() => {
+                kitty.style.bottom = '0px';
+            }, 300); // Saltar por 300ms
+        }
+
+        function isColliding(elem1, elem2) {
+            const rect1 = elem1.getBoundingClientRect();
+            const rect2 = elem2.getBoundingClientRect();
+
+            return !(
+                rect1.top > rect2.bottom || 
+                rect1.bottom < rect2.top || 
+                rect1.right < rect2.left || 
+                rect1.left > rect2.right
+            );
+        }
+
+        // Asignar funciones a los botones de control
+        document.getElementById('left').addEventListener('click', (a) => moveKitty('left'));
+        document.getElementById('right').addEventListener('click', (b) => moveKitty('right'));
+        document.getElementById('jump').addEventListener('click', jumpKitty);
+    </script>
+</body>
+</html>
